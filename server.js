@@ -11,24 +11,23 @@ const PDFDocument = require("pdfkit");
 const app = express();
 
 // Middleware
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // Serves uploaded files
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
-// Serves uploaded files
+app.use(express.static(path.join(__dirname, "public"))); // Serves static files
 
 // MySQL Database Connection
 const db = mysql.createConnection({
     host: "localhost",
-    user: "root", 
-    password: "Preet@2006", 
-    database: "mess_feedback"
+    user: "root",
+    password: "Preet@2006",
+    database: "mess_feedback",
 });
 
 db.connect((err) => {
     if (err) {
-        console.error("Database Connection Failed:", err);
+        console.error("❌ Database Connection Failed:", err);
         return;
     }
     console.log("✅ MySQL Connected...");
@@ -43,44 +42,33 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Submit Feedback API
-app.post("/submit-feedback", upload.single("proof"), (req, res) => {
-    const { reg_no, student_name, block_room, mess_name, mess_type, category, feedback_type, comments } = req.body;
-    const proof = req.file ? req.file.filename : null;
+// ✅ Submit Feedback API
+app.post("/submit-feedback", upload.single("proof"), async (req, res) => {
+    try {
+        const { reg_no, student_name, block_room, mess_name, mess_type, category, feedback_type, comments } = req.body;
+        const proof = req.file ? req.file.filename : null;
 
-    // 🔹 Debugging: Log received data
-    console.log("📥 Received Data from Client:");
-    console.log("Reg No:", reg_no);
-    console.log("Student Name:", student_name);
-    console.log("Block & Room:", block_room);
-    console.log("Mess Name:", mess_name);
-    console.log("Mess Type:", mess_type);
-    console.log("Category:", category);
-    console.log("Feedback Type:", feedback_type);
-    console.log("Comments:", comments);
-    console.log("Proof File:", proof);
-
-    // 🔹 Check if any required field is missing
-    if (!reg_no || !student_name || !block_room || !mess_name || !mess_type || !category || !feedback_type || !comments) {
-        return res.status(400).json({ error: "⚠️ All fields are required except proof attachment." });
-    }
-
-    const sql = "INSERT INTO feedback (reg_no, student_name, block_room, mess_name, mess_type, category, feedback_type, comments, proof) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    db.query(sql, [reg_no, student_name, block_room, mess_name, mess_type, category, feedback_type, comments, proof], (err, result) => {
-        if (err) {
-            console.error("❌ Database Error:", err);
-            return res.status(500).json({ error: "❌ Database error. Please try again." });
+        if (!reg_no || !student_name || !block_room || !mess_name || !mess_type || !category || !feedback_type || !comments) {
+            return res.status(400).json({ error: "⚠️ All fields are required except proof attachment." });
         }
-        res.json({ message: "✅ Feedback submitted successfully!" });        
-    });
+
+        const sql = "INSERT INTO feedback (reg_no, student_name, block_room, mess_name, mess_type, category, feedback_type, comments, proof) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        await db.promise().query(sql, [reg_no, student_name, block_room, mess_name, mess_type, category, feedback_type, comments, proof]);
+
+        res.json({ message: "✅ Feedback submitted successfully!" });
+    } catch (err) {
+        console.error("❌ Error submitting feedback:", err);
+        res.status(500).json({ error: "❌ Server error. Please try again." });
+    }
 });
 
-
-
-// Generate Excel Report API
-app.get("/generate-excel", (req, res) => {
-    db.query("SELECT * FROM feedback", (err, results) => {
-        if (err) return res.status(500).json({ error: "Database error" });
+// ✅ Generate Excel Report API
+app.get("/generate-excel", async (req, res) => {
+    try {
+        const [results] = await db.promise().query("SELECT * FROM feedback");
+        if (results.length === 0) {
+            return res.status(404).send("⚠️ No feedback found.");
+        }
 
         const wb = xlsx.utils.book_new();
         const ws = xlsx.utils.json_to_sheet(results);
@@ -88,48 +76,48 @@ app.get("/generate-excel", (req, res) => {
 
         const filename = "feedback-report.xlsx";
         xlsx.writeFile(wb, filename);
-        res.download(filename, () => fs.unlinkSync(filename)); // Delete file after download
-    });
+
+        res.download(filename, () => {
+            fs.unlinkSync(filename); // Delete after download
+        });
+    } catch (err) {
+        console.error("❌ Error generating Excel:", err);
+        res.status(500).json({ error: "❌ Server error" });
+    }
 });
 
-// Generate PDF Report API
-app.get("/generate-pdf", (req, res) => {
-    db.query("SELECT * FROM feedback", (err, results) => {
-        if (err) return res.status(500).json({ error: "Database error" });
+// ✅ Generate PDF Report API
+app.get("/generate-pdf", async (req, res) => {
+    try {
+        const [results] = await db.promise().query("SELECT * FROM feedback");
+        if (results.length === 0) {
+            return res.status(404).send("⚠️ No feedback found.");
+        }
 
         const doc = new PDFDocument();
-        const filename = "feedback-report.pdf";
-        doc.pipe(fs.createWriteStream(filename));
+        res.setHeader("Content-Disposition", 'attachment; filename="feedback-report.pdf"');
+        res.setHeader("Content-Type", "application/pdf");
+        doc.pipe(res);
 
         doc.fontSize(16).text("Mess Feedback Report", { align: "center" });
         doc.moveDown();
 
         results.forEach((row) => {
-            doc.fontSize(12).text(`Reg No: ${row.reg_no}, Student: ${row.student_name}, Category: ${row.category}, Comments: ${row.comments}`);
+            doc.fontSize(12).text(`Reg No: ${row.reg_no}\nStudent: ${row.student_name}\nCategory: ${row.category}\nComments: ${row.comments}`, { width: 450, align: "left" });
             doc.moveDown();
         });
 
         doc.end();
-        res.download(filename, () => fs.unlinkSync(filename));
-    });
+    } catch (err) {
+        console.error("❌ Error generating PDF:", err);
+        res.status(500).json({ error: "❌ Server error" });
+    }
 });
 
-// Serve static files from the "public" folder
-app.use(express.static(path.join(__dirname, "public")));
+// ✅ Serve Static Pages
+app.get("/feedback", (req, res) => res.sendFile(path.join(__dirname, "public", "feedback.html")));
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
+app.get("/success", (req, res) => res.sendFile(path.join(__dirname, "public", "success.html")));
 
-// Serve feedback.html when user visits "/feedback"
-app.get("/feedback", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "feedback.html"));
-});
-
-// Serve index.html as the default page
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-app.get("/success", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "success.html"));
-});
-
-app.listen(5000, () => {
-    console.log("🚀 Server running on http://localhost:5000");
-});
+// ✅ Start Server
+app.listen(5000, () => console.log("🚀 Server running on http://localhost:5000"));
