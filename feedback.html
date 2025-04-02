@@ -1,123 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mess Feedback Portal</title>
+    <meta name="author" content="Jaspreet">
+    <title>Mess Feedback Form</title>
     <link rel="stylesheet" href="/public/styles-feedback.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
 </head>
+
 <body>
+
+    <!-- Header -->
     <header>
         <h1>Mess Feedback Portal</h1>
         <nav>
-            <a href="#services">Services</a>
-            <a href="index.html" class="home-icon">
-                <span class="material-symbols-outlined">home</span>
-            </a>
-            <a href="#about">About</a>
+            <a href="index.html">Home</a>
         </nav>
     </header>
 
-    <main>
-        <section id="form">
-            <div class="form-container">
-                <h2>Submit Your Mess Feedback</h2>
-                <form action="/submit-feedback" method="POST" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label for="reg_no">Registration No:</label>
-                        <input type="text" id="reg_no" name="reg_no" placeholder="Enter your Registration No." required>
-                    </div>
+    <!-- Feedback Form Section -->
+    <section class="feedback-container">
+        <h2>Mess Feedback Form</h2>
+        <form id="feedbackForm" enctype="multipart/form-data" action="http://localhost:5000/submit-feedback"
+            method="POST">
 
-                    <div class="form-group">
-                        <label for="student_name">Student Name:</label>
-                        <input type="text" id="student_name" name="student_name" placeholder="Enter your Name" required>
-                    </div>
+            <label>Reg No:</label>
+            <input type="text" id="reg_no" required>
 
-                    <div class="form-group">
-                        <label for="block">Block:</label>
-                        <input type="text" id="block" name="block" placeholder="Enter Block Name" required>
-                    </div>
+            <label>Student Name:</label>
+            <input type="text" id="student_name" required>
 
-                    <div class="form-group">
-                        <label for="room_no">Room No:</label>
-                        <input type="text" id="room_no" name="room_no" placeholder="Enter Room Number" required>
-                    </div>
+            <label>Block & Room Number:</label>
+            <input type="text" id="block_room" required>
 
-                    <div class="form-group">
-                        <label for="mess_name">Mess Name:</label>
-                        <input type="text" id="mess_name" name="mess_name" placeholder="Enter Mess Name" required>
-                    </div>
+            <label>Mess Name:</label>
+            <input type="text" id="mess_name" required>
 
-                    <div class="form-group">
-                        <label for="mess_type">Mess Type:</label>
-                        <select id="mess_type" name="mess_type" required>
-                            <option value="Veg">Veg</option>
-                            <option value="Non-Veg">Non-Veg</option>
-                            <option value="Special">Special</option>
-                            <option value="Night Mess">Night Mess</option>
-                        </select>
-                    </div>
+            <label>Mess Type:</label>
+            <select id="mess_type">
+                <option value="Veg">Veg</option>
+                <option value="Non-Veg">Non-Veg</option>
+                <option value="Special">Special</option>
+                <option value="Night Mess">Night Mess</option>
+            </select>
 
-                    <div class="form-group">
-                        <label for="category">Category:</label>
-                        <select id="category" name="category" required>
-                            <option value="Quality">Quality</option>
-                            <option value="Quantity">Quantity</option>
-                            <option value="Hygiene">Hygiene</option>
-                            <option value="Mess Timing">Mess Timing</option>
-                            <option value="Others">Others</option>
-                        </select>
-                    </div>
+            <label>Category:</label>
+            <select id="category">
+                <option value="Quality">Quality</option>
+                <option value="Quantity">Quantity</option>
+                <option value="Hygiene">Hygiene</option>
+                <option value="Mess Timing">Mess Timing</option>
+                <option value="Others">Others</option>
+            </select>
 
-                    <div class="form-group">
-                        <label for="feedback">Feedback:</label>
-                        <textarea id="feedback" name="feedback" placeholder="Enter your feedback..." required></textarea>
-                    </div>
+            <label>Feedback Type:</label>
+            <select id="feedback_type">
+                <option value="Suggestion">Suggestion</option>
+                <option value="Improvement">Improvement</option>
+                <option value="Feedback">Feedback</option>
+            </select>
 
-                    <div class="form-group">
-                        <label for="suggestions">Suggestions/Improvements:</label>
-                        <textarea id="suggestions" name="suggestions" placeholder="Enter your suggestions..."></textarea>
-                    </div>
+            <label>Comments:</label>
+            <textarea id="comments" required></textarea>
 
-                    <div class="form-group">
-                        <label for="comments">Additional Comments:</label>
-                        <textarea id="comments" name="comments" placeholder="Any other comments..."></textarea>
-                    </div>
+            <label>Attach Proof (PDF, DOC, JPG):</label>
+            <input type="file" id="proof" accept=".pdf,.doc,.jpg">
 
-                    <div class="form-group">
-                        <label for="proof">Proof (optional, pdf/.doc/.jpg):</label>
-                        <input type="file" id="proof" name="proof">
-                    </div>
-
-                    <button type="submit" class="submit-btn">Submit Feedback</button>
-                </form>
-            </div>
-        </section>
-    </main>
-
-    <section id="about">
-        <h2>About the Mess Feedback Portal</h2>
-        <p>Provide valuable feedback to improve food quality and services.</p>
-        <ul>
-            <li>Ensures food quality and hygiene</li>
-            <li>Improves menu variety</li>
-            <li>Addresses student concerns</li>
-            <li>Encourages mess improvements</li>
-        </ul>
+            <button type="submit">Submit</button>
+        </form>
     </section>
 
-    <section id="services">
-        <h2>Our Services</h2>
-        <div class="columns">
-            <div><h3>Mess Feedback Form</h3></div>
-            <div><h3>Contact</h3><p>123-456-7890<br>info@mysite.com</p></div>
-            <div><h3>Operating Hours</h3><p>Mon-Fri: 8am - 8pm</p><p>Sat-Sun: 9am - 8pm</p></div>
-        </div>
-    </section>
-
+    <!-- Footer -->
     <footer>
         <p>© 2025 Mess Feedback Portal. All rights reserved.</p>
+        <p>Designed & Developed by <strong>Jaspreet</strong></p>
     </footer>
+    <script src="/public/script.js"></script>
 </body>
+
 </html>
