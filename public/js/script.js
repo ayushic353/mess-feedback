@@ -1,4 +1,3 @@
-// Mess Feedback Portal - Developed by Jaspreet
 document.getElementById("feedbackForm").addEventListener("submit", async function(event) {
     event.preventDefault();
 
@@ -11,7 +10,12 @@ document.getElementById("feedbackForm").addEventListener("submit", async functio
     formData.append("category", document.getElementById("category").value);
     formData.append("feedback_type", document.getElementById("feedback_type").value);
     formData.append("comments", document.getElementById("comments").value);
-    formData.append("proof", document.getElementById("proof").files[0]);
+    
+    // Handle optional proof file
+    const proofFile = document.getElementById("proof").files[0];
+    if (proofFile) {
+        formData.append("proof", proofFile);
+    }
 
     try {
         const response = await fetch("http://localhost:5000/submit-feedback", {
@@ -21,7 +25,8 @@ document.getElementById("feedbackForm").addEventListener("submit", async functio
 
         const result = await response.json();
         if (response.ok) {
-            window.location.href = "success.html"; // Redirect to success page
+            // Redirect to the success page after submission
+            window.location.href = "/success";
         } else {
             alert(result.error || "Failed to submit feedback. Please try again.");
         }
@@ -30,3 +35,5 @@ document.getElementById("feedbackForm").addEventListener("submit", async functio
         alert("Failed to submit feedback. Please try again.");
     }
 });
+
+

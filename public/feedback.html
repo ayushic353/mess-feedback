@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jaspreet">
     <title>Mess Feedback Form</title>
-    <link rel="stylesheet" href="/public/styles-feedback.css">
+    <link rel="stylesheet" href="/css/styles-feedback.css">
 </head>
 
 <body>
@@ -22,53 +22,52 @@
     <!-- Feedback Form Section -->
     <section class="feedback-container">
         <h2>Mess Feedback Form</h2>
-        <form id="feedbackForm" enctype="multipart/form-data" action="http://localhost:5000/submit-feedback"
-            method="POST">
+        <form id="feedbackForm" enctype="multipart/form-data" action="http://localhost:5000/submit-feedback" method="POST">
 
             <label>Reg No:</label>
-            <input type="text" id="reg_no" required>
-
+            <input type="text" id="reg_no" name="reg_no" required>
+        
             <label>Student Name:</label>
-            <input type="text" id="student_name" required>
-
+            <input type="text" id="student_name" name="student_name" required>
+        
             <label>Block & Room Number:</label>
-            <input type="text" id="block_room" required>
-
+            <input type="text" id="block_room" name="block_room" required>
+        
             <label>Mess Name:</label>
-            <input type="text" id="mess_name" required>
-
+            <input type="text" id="mess_name" name="mess_name" required>
+        
             <label>Mess Type:</label>
-            <select id="mess_type">
+            <select id="mess_type" name="mess_type" required>
                 <option value="Veg">Veg</option>
                 <option value="Non-Veg">Non-Veg</option>
                 <option value="Special">Special</option>
                 <option value="Night Mess">Night Mess</option>
             </select>
-
+        
             <label>Category:</label>
-            <select id="category">
+            <select id="category" name="category" required>
                 <option value="Quality">Quality</option>
                 <option value="Quantity">Quantity</option>
                 <option value="Hygiene">Hygiene</option>
                 <option value="Mess Timing">Mess Timing</option>
                 <option value="Others">Others</option>
             </select>
-
+        
             <label>Feedback Type:</label>
-            <select id="feedback_type">
+            <select id="feedback_type" name="feedback_type" required>
                 <option value="Suggestion">Suggestion</option>
                 <option value="Improvement">Improvement</option>
                 <option value="Feedback">Feedback</option>
             </select>
-
+        
             <label>Comments:</label>
-            <textarea id="comments" required></textarea>
-
+            <textarea id="comments" name="comments" required></textarea>
+        
             <label>Attach Proof (PDF, DOC, JPG):</label>
-            <input type="file" id="proof" accept=".pdf,.doc,.jpg">
-
+            <input type="file" id="proof" name="proof" accept=".pdf,.doc,.jpg">
+        
             <button type="submit">Submit</button>
-        </form>
+        </form>        
     </section>
 
     <!-- Footer -->
@@ -76,7 +75,7 @@
         <p>© 2025 Mess Feedback Portal. All rights reserved.</p>
         <p>Designed & Developed by <strong>Jaspreet</strong></p>
     </footer>
-    <script src="/public/script.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 
 </html>
