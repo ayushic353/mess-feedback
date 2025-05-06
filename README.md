@@ -123,9 +123,9 @@ Server will run at: **[http://localhost:5000](http://localhost:5000)**
 
 ## ��� Contact
 
-��� **Jaspreet**  
-��� Email: **jaspreetjalan011@gmail.com**  
-��� GitHub: [jass-06](https://github.com/jass-06)  
+��� **Aayushi**  
+��� Email: **ayushicharde@gmail.com**  
+
 
 ---
 
