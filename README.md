@@ -54,7 +54,7 @@ mess-feedback1/         # Main Project Folder
 
 ### 1️⃣ Clone the Repository
 ```sh
-git clone https://github.com/jass-06/mess-feedback1.git
+git clone https://github.com/ayushic353/mess-feedback.git
 cd mess-feedback1
 ```
 
